@@ -61,7 +61,7 @@
         <form id="prompt-form" class="space-y-4">
           <div>
             <label for="category" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Kategori</label>
-            <select id="category" name="category" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none">
+            <select id="category" name="category" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
               <option value="Luxury">Luxury</option>
               <option value="Food">Food</option>
               <option value="Cinematic">Cinematic</option>
@@ -71,13 +71,13 @@
 
           <div>
             <label for="prompt" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Isi Prompt</label>
-            <textarea id="prompt" name="prompt" rows="4" required placeholder="Tulis prompt Anda di sini..." class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none"></textarea>
+            <textarea id="prompt" name="prompt" rows="4" required placeholder="Tulis prompt Anda di sini..." class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"></textarea>
           </div>
 
           <div class="grid gap-2 sm:flex sm:flex-wrap">
-            <button type="submit" class="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-slate-700 sm:w-auto">Simpan Prompt</button>
-            <button id="export-json" type="button" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto">Export JSON</button>
-            <button id="export-text" type="button" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto">Export TXT</button>
+            <button type="submit" class="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-slate-700 sm:w-auto dark:bg-amber-400 dark:text-slate-900 dark:hover:bg-amber-300">Simpan Prompt</button>
+            <button id="export-json" type="button" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Export JSON</button>
+            <button id="export-text" type="button" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Export TXT</button>
           </div>
         </form>
       </section>
@@ -86,8 +86,8 @@
         <h2 class="mb-4 text-lg font-semibold">Daftar Kartu Prompt</h2>
 
         <div class="mb-4 space-y-3">
-          <label for="search-input" class="block text-sm font-medium text-slate-700">Search Prompt</label>
-          <input id="search-input" type="search" placeholder="Cari isi prompt..." class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none" />
+          <label for="search-input" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Search Prompt</label>
+          <input id="search-input" type="search" placeholder="Cari isi prompt..." class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
 
           <div id="category-filters" class="flex flex-wrap gap-2">
             <button type="button" data-filter="All" class="filter-pill rounded-full border px-3 py-1 text-xs font-semibold transition">All</button>
@@ -104,18 +104,18 @@
     <template id="prompt-card-template">
       <article class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition sm:p-4 dark:border-slate-800 dark:bg-slate-900">
         <div class="mb-2 flex items-center justify-between gap-2">
-          <span class="category rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700"></span>
+          <span class="category rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"></span>
           <div class="flex items-center gap-1">
-            <button type="button" class="copy inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100" aria-label="Salin prompt" title="Salin">
+            <button type="button" class="copy inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800" aria-label="Salin prompt" title="Salin">
               <span aria-hidden="true">📋</span><span>Salin</span>
             </button>
-            <button type="button" class="delete inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-rose-700 transition hover:bg-rose-50" aria-label="Hapus prompt" title="Hapus">
+            <button type="button" class="delete inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-rose-700 transition hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-500/10" aria-label="Hapus prompt" title="Hapus">
               <span aria-hidden="true">🗑️</span><span>Hapus</span>
             </button>
           </div>
         </div>
         <img class="preview-image mb-3 h-36 w-full rounded-xl object-cover sm:h-40" alt="Preview kategori prompt" loading="lazy" />
-        <p class="content text-sm leading-relaxed text-slate-700"></p>
+        <p class="content text-sm leading-relaxed text-slate-700 dark:text-slate-300"></p>
       </article>
     </template>
 
@@ -148,19 +148,23 @@
       };
 
       const updateThemeLabel = () => {
-        themeToggle.textContent = '☀️ Light Mode';
+        const isDark = document.documentElement.classList.contains('dark');
+        themeToggle.textContent = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
       };
 
       const initializeTheme = () => {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem(THEME_KEY, 'light');
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+        document.documentElement.classList.toggle('dark', shouldDark);
         updateThemeLabel();
       };
 
       themeToggle.addEventListener('click', () => {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem(THEME_KEY, 'light');
-        showToast('Mode tetap Light');
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+        updateThemeLabel();
+        showToast(isDark ? 'Dark mode aktif' : 'Light mode aktif');
       });
 
       const getPrompts = () => {
@@ -212,8 +216,8 @@
         filterButtons.forEach((button) => {
           const isActive = button.dataset.filter === activeCategoryFilter;
           button.className = isActive
-            ? 'filter-pill rounded-full border border-amber-400 bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900 transition'
-            : 'filter-pill rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400';
+            ? 'filter-pill rounded-full border border-amber-400 bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900 transition dark:border-amber-300 dark:bg-amber-300/20 dark:text-amber-200'
+            : 'filter-pill rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500';
         });
       };
 
@@ -236,7 +240,7 @@
         list.innerHTML = '';
 
         if (prompts.length === 0) {
-          list.innerHTML = '<p class="text-sm text-slate-500">Tidak ada prompt yang cocok dengan filter saat ini.</p>';
+          list.innerHTML = '<p class="text-sm text-slate-500 dark:text-slate-400">Tidak ada prompt yang cocok dengan filter saat ini.</p>';
           return;
         }
 
