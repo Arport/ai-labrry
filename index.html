@@ -82,12 +82,28 @@
             ></textarea>
           </div>
 
-          <button
-            type="submit"
-            class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-amber-400 dark:text-slate-900 dark:hover:bg-amber-300"
-          >
-            Simpan Prompt
-          </button>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="submit"
+              class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-amber-400 dark:text-slate-900 dark:hover:bg-amber-300"
+            >
+              Simpan Prompt
+            </button>
+            <button
+              id="export-json"
+              type="button"
+              class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              Export JSON
+            </button>
+            <button
+              id="export-text"
+              type="button"
+              class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              Export TXT
+            </button>
+          </div>
         </form>
       </section>
 
@@ -154,6 +170,8 @@
       const searchInput = document.getElementById('search-input');
       const filterButtons = Array.from(document.querySelectorAll('.filter-pill'));
       const toast = document.getElementById('toast');
+      const exportJsonButton = document.getElementById('export-json');
+      const exportTextButton = document.getElementById('export-text');
 
       let activeCategoryFilter = 'All';
 
@@ -169,6 +187,41 @@
           toast.classList.add('opacity-0', 'translate-y-2');
           toast.classList.remove('opacity-100', 'translate-y-0');
         }, 1400);
+      };
+
+      
+      const downloadFile = (filename, content, mimeType) => {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      };
+
+      const exportPromptData = (format = 'json') => {
+        const prompts = getPrompts();
+        if (prompts.length === 0) {
+          showToast('Belum ada data untuk diexport');
+          return;
+        }
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        if (format === 'text') {
+          const content = prompts
+            .map((item, index) => `${index + 1}. [${item.category}]\n${item.prompt}`)
+            .join('\n\n');
+          downloadFile(`prompt-data-${timestamp}.txt`, content, 'text/plain;charset=utf-8');
+          showToast('Export TXT berhasil');
+          return;
+        }
+
+        const content = JSON.stringify(prompts, null, 2);
+        downloadFile(`prompt-data-${timestamp}.json`, content, 'application/json;charset=utf-8');
+        showToast('Export JSON berhasil');
       };
 
       const updateThemeLabel = () => {
@@ -277,6 +330,14 @@
 
       searchInput.addEventListener('input', () => {
         renderPrompts();
+      });
+
+      exportJsonButton.addEventListener('click', () => {
+        exportPromptData('json');
+      });
+
+      exportTextButton.addEventListener('click', () => {
+        exportPromptData('text');
       });
 
       const savePromptFromForm = () => {
