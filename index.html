@@ -149,7 +149,7 @@
 
       const updateThemeLabel = () => {
         const isDark = document.documentElement.classList.contains('dark');
-        themeToggle.textContent = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
+        themeToggle.textContent = isDark ? '☀️ Pindah ke Light Mode' : '🌙 Pindah ke Dark Mode';
       };
 
       const initializeTheme = () => {
@@ -157,12 +157,14 @@
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const shouldDark = savedTheme ? savedTheme === 'dark' : prefersDark;
         document.documentElement.classList.toggle('dark', shouldDark);
+        themeToggle.setAttribute('aria-pressed', String(shouldDark));
         updateThemeLabel();
       };
 
       themeToggle.addEventListener('click', () => {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+        themeToggle.setAttribute('aria-pressed', String(isDark));
         updateThemeLabel();
         showToast(isDark ? 'Dark mode aktif' : 'Light mode aktif');
       });
