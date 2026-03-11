@@ -8,7 +8,6 @@
       tailwind = { config: { darkMode: 'class' } };
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -44,7 +43,7 @@
         <div>
           <p class="mb-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-amber-800 dark:bg-amber-500/20 dark:text-amber-300">Prompt Studio</p>
           <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Koleksi Prompt Premium</h1>
-          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Simpan prompt ke LocalStorage dengan opsi sinkronisasi Supabase di belakang layar.</p>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Simpan prompt ke LocalStorage dengan cepat dan simpel.</p>
         </div>
         <button
           id="theme-toggle"
@@ -123,12 +122,6 @@
     <script>
       const STORAGE_KEY = 'promptCards';
       const THEME_KEY = 'promptTheme';
-      const SUPABASE_URL_KEY = 'supabaseUrl';
-      const SUPABASE_ANON_KEY = 'supabaseAnonKey';
-      const SUPABASE_CONFIG = {
-        url: 'https://qzwmyrmwhiubzmhcemdp.supabase.co',
-        anonKey: 'sb_publishable_OkFqC6jy6s6wj0KB6INtaA_HbUxiDPN',
-      };
 
       const form = document.getElementById('prompt-form');
       const list = document.getElementById('prompt-list');
@@ -142,7 +135,6 @@
 
       let activeCategoryFilter = 'All';
       let toastTimeoutId;
-      let supabaseClient = null;
 
       const showToast = (message) => {
         toast.textContent = message;
@@ -278,47 +270,17 @@
             }
           });
 
-          deleteButton.addEventListener('click', async () => {
+          deleteButton.addEventListener('click', () => {
             const updated = getPrompts().filter((entry) => entry.id !== item.id);
             savePrompts(updated);
             renderPrompts();
-            if (supabaseClient) {
-              const { error } = await supabaseClient.from('prompts').delete().eq('id', item.id);
-              if (error) showToast('Hapus online gagal');
-            }
           });
 
           list.appendChild(fragment);
         });
       };
 
-      const fetchPromptsFromSupabase = async () => {
-        const { data, error } = await supabaseClient.from('prompts').select('id, category, prompt').order('created_at', { ascending: false });
-        if (error) throw error;
-        const prompts = (data || []).map((item) => ({ id: item.id, category: item.category, prompt: item.prompt }));
-        savePrompts(prompts);
-        renderPrompts();
-      };
-
-      const connectSupabase = async (url, anonKey) => {
-        if (!url || !anonKey) {
-          supabaseClient = null;
-          return;
-        }
-
-        try {
-          supabaseClient = window.supabase.createClient(url, anonKey);
-          await fetchPromptsFromSupabase();
-          localStorage.setItem(SUPABASE_URL_KEY, url);
-          localStorage.setItem(SUPABASE_ANON_KEY, anonKey);
-          showToast('Supabase terhubung');
-        } catch {
-          supabaseClient = null;
-          showToast('Gagal konek Supabase');
-        }
-      };
-
-      const savePromptFromForm = async () => {
+      const savePromptFromForm = () => {
         const category = form.category.value;
         const prompt = form.prompt.value.trim();
         if (!prompt) return null;
@@ -328,10 +290,6 @@
         prompts.unshift(newPrompt);
         savePrompts(prompts);
 
-        if (supabaseClient) {
-          const { error } = await supabaseClient.from('prompts').insert(newPrompt);
-          if (error) showToast('Simpan online gagal, tersimpan lokal');
-        }
 
         return newPrompt;
       };
@@ -348,23 +306,20 @@
       exportJsonButton.addEventListener('click', () => exportPromptData('json'));
       exportTextButton.addEventListener('click', () => exportPromptData('text'));
 
-      form.addEventListener('submit', async (event) => {
+      form.addEventListener('submit', (event) => {
         event.preventDefault();
-        const newPrompt = await savePromptFromForm();
+        const newPrompt = savePromptFromForm();
         if (!newPrompt) return;
         form.reset();
         form.category.value = 'Luxury';
         renderPrompts(newPrompt.id);
       });
 
-      const initializeApp = async () => {
+      const initializeApp = () => {
         initializeTheme();
         updateFilterPills();
         renderPrompts();
 
-        const savedUrl = localStorage.getItem(SUPABASE_URL_KEY) || SUPABASE_CONFIG.url;
-        const savedKey = localStorage.getItem(SUPABASE_ANON_KEY) || SUPABASE_CONFIG.anonKey;
-        await connectSupabase(savedUrl, savedKey);
       };
 
       initializeApp();
