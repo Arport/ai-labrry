@@ -256,12 +256,10 @@
         renderPrompts();
       });
 
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-
+      const savePromptFromForm = () => {
         const category = form.category.value;
         const prompt = form.prompt.value.trim();
-        if (!prompt) return;
+        if (!prompt) return null;
 
         const newPrompt = {
           id: crypto.randomUUID(),
@@ -271,16 +269,28 @@
 
         const prompts = getPrompts();
         prompts.unshift(newPrompt);
-
         savePrompts(prompts);
+
+        return newPrompt;
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const newPrompt = savePromptFromForm();
+        if (!newPrompt) return;
+
         form.reset();
         form.category.value = 'Luxury';
         renderPrompts(newPrompt.id);
       });
 
-      initializeTheme();
-      updateFilterPills();
-      renderPrompts();
+      const initializeApp = () => {
+        initializeTheme();
+        updateFilterPills();
+        renderPrompts();
+      };
+
+      initializeApp();
     </script>
   </body>
 </html>
