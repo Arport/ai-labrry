@@ -85,6 +85,24 @@
 
       <section>
         <h2 class="mb-4 text-lg font-semibold">Daftar Kartu Prompt</h2>
+
+        <div class="mb-4 space-y-3">
+          <label for="search-input" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Search Prompt</label>
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Cari isi prompt..."
+            class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm transition focus:border-amber-400 focus:outline-none dark:border-slate-700 dark:bg-slate-950"
+          />
+
+          <div id="category-filters" class="flex flex-wrap gap-2">
+            <button type="button" data-filter="All" class="filter-pill rounded-full border px-3 py-1 text-xs font-semibold transition">All</button>
+            <button type="button" data-filter="Luxury" class="filter-pill rounded-full border px-3 py-1 text-xs font-semibold transition">Luxury</button>
+            <button type="button" data-filter="Food" class="filter-pill rounded-full border px-3 py-1 text-xs font-semibold transition">Food</button>
+            <button type="button" data-filter="Cinematic" class="filter-pill rounded-full border px-3 py-1 text-xs font-semibold transition">Cinematic</button>
+          </div>
+        </div>
+
         <div id="prompt-list" class="grid gap-4 sm:grid-cols-2"></div>
       </section>
     </main>
@@ -111,6 +129,10 @@
       const list = document.getElementById('prompt-list');
       const template = document.getElementById('prompt-card-template');
       const themeToggle = document.getElementById('theme-toggle');
+      const searchInput = document.getElementById('search-input');
+      const filterButtons = Array.from(document.querySelectorAll('.filter-pill'));
+
+      let activeCategoryFilter = 'All';
 
       const updateThemeLabel = () => {
         const dark = document.documentElement.classList.contains('dark');
@@ -146,12 +168,30 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
       };
 
+      const updateFilterPills = () => {
+        filterButtons.forEach((button) => {
+          const isActive = button.dataset.filter === activeCategoryFilter;
+          button.className = isActive
+            ? 'filter-pill rounded-full border border-amber-400 bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900 transition dark:border-amber-300 dark:bg-amber-300/20 dark:text-amber-200'
+            : 'filter-pill rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300';
+        });
+      };
+
+      const getFilteredPrompts = () => {
+        const query = searchInput.value.trim().toLowerCase();
+        return getPrompts().filter((item) => {
+          const categoryMatches = activeCategoryFilter === 'All' || item.category === activeCategoryFilter;
+          const searchMatches = item.prompt.toLowerCase().includes(query);
+          return categoryMatches && searchMatches;
+        });
+      };
+
       const renderPrompts = (highlightId = null) => {
-        const prompts = getPrompts();
+        const prompts = getFilteredPrompts();
         list.innerHTML = '';
 
         if (prompts.length === 0) {
-          list.innerHTML = '<p class="text-sm text-slate-500 dark:text-slate-400">Belum ada prompt tersimpan.</p>';
+          list.innerHTML = '<p class="text-sm text-slate-500 dark:text-slate-400">Tidak ada prompt yang cocok dengan filter saat ini.</p>';
           return;
         }
 
@@ -179,6 +219,18 @@
         });
       };
 
+      filterButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          activeCategoryFilter = button.dataset.filter;
+          updateFilterPills();
+          renderPrompts();
+        });
+      });
+
+      searchInput.addEventListener('input', () => {
+        renderPrompts();
+      });
+
       form.addEventListener('submit', (event) => {
         event.preventDefault();
 
@@ -202,6 +254,7 @@
       });
 
       initializeTheme();
+      updateFilterPills();
       renderPrompts();
     </script>
   </body>
